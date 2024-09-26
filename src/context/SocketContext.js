@@ -15,7 +15,7 @@ const SocketProvider = ({children}) => {
     useEffect(() => {
         if(currentUser)
         {
-            const socketInit = io('http://localhost:8000');
+            const socketInit = io(process.env.REACT_APP_SERVER_URL);
             setSocket(socketInit)
 
             // Emit addUser when the user is connected
