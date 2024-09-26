@@ -1,0 +1,61 @@
+import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import auth from "../config/firebase";
+
+export const AuthContext = createContext();
+
+export const useAuth = () => useContext(AuthContext);
+
+const AuthProvider = ({children}) => {
+    const[currentUser, setCurrentUser] = useState()
+    const[ loading, setLoading] = useState(true)
+    const [ messageReciever, setMessageReciever] = useState([])
+    const [isDarkTheme, setIsDarkTheme] = useState(false)
+
+    const register = (email, password) => {
+        return createUserWithEmailAndPassword(auth, email, password)
+    }
+
+    const login = (email, password) => {
+        return signInWithEmailAndPassword(auth, email, password)
+    }
+
+    const logout = () => signOut(auth)
+
+    const resetPassword = (email) => {
+        return sendPasswordResetEmail(auth, email)
+    }
+
+    const updateUserProfile = (user, name) => {
+        return updateProfile(user, name)
+    }
+
+    const fetchUser = useCallback(() => {
+        const response =  auth.onAuthStateChanged((user) => {
+            setCurrentUser(user)
+            setLoading(false)
+        })
+        return response
+    },[])
+
+    useEffect(() => {
+        return fetchUser();
+    },[fetchUser])
+
+    const context = {
+        currentUser,
+        register,
+        login,
+        logout,
+        resetPassword,
+        updateUserProfile,
+        messageReciever,
+        setMessageReciever,
+        isDarkTheme,
+        setIsDarkTheme
+    }
+
+    return <AuthContext.Provider value={context}>{!loading && children}</AuthContext.Provider>
+}
+
+export default AuthProvider
