@@ -1,0 +1,46 @@
+.searchBtn:focus{
+    outline: none;
+    box-shadow: none;
+    border-color: #ccc;
+  }
+  
+.sidebar {
+    padding: 1rem;
+    position: relative;
+    border-right: none;
+    background-color: #d2d2d29e;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100vh
+}
+
+.sidebar .user-info, .user-info > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+}
+  
+.contacts-box {
+    display: flex;
+    gap: 1rem;
+    padding: 10px;
+    margin-bottom: 2px;
+}
+  
+.contacts-box:hover {
+    background-color: rgba(146, 146, 146, 0.785);
+    border-radius: 5px;
+    transition: 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    cursor: pointer;
+}
+
+.contacts .active {
+    background-color: rgba(146, 146, 146, 0.785);
+    border-radius: 5px;
+}
+  
+.contacts-box > span {
+    font-size: x-small;
+}

@@ -2,44 +2,33 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { getMessages, sendMessage } from "../../service/service"
 import { useAuth } from "../../context/AuthContext"
 import { useSocketContext } from "../../context/SocketContext"
+import './Chats.css'
+import { dateParser } from "../../utils/dateParser"
 
-const ChatLayout = () => {
-    const { messageReciever, currentUser} = useAuth()
+const Chats = () => {
+    const { contacts , currentUser} = useAuth()
     const { onlineUsers, socket } = useSocketContext()
+
     const [conversation, setConversation] = useState([])
     const [message, setMessage] = useState('')
+
     const [isTyping, setIsTyping] = useState(false);
     const [typingUser, setTypingUser] = useState(null);
     const lastMessage = useRef(null)
 
-    const isOnline = onlineUsers.includes(messageReciever?.uid)
+    const isOnline = onlineUsers.includes(contacts?.uid)
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try 
-        {
-            await sendMessage(message, messageReciever.uid)
-            await fetchData()
-        } 
-        catch (error) 
-        {
-            console.log("Error", error);
-            
-        }
-        setMessage('')
-    }
-
-    const fetchData = useCallback(async() => {
-        const data = await getMessages(messageReciever?.uid)
-        const messages = Array.isArray(data.message) ? data.message : [];
-
+    const fetchData = useCallback(async(id) => {
+        const data = await getMessages(id)
+        const messages = Array.isArray(data) ? data : [];
+        
         setConversation(messages)
         
-    },[messageReciever])
+    },[])
 
     useEffect(() => {
-        fetchData()
-    },[fetchData])
+        fetchData(contacts.uid)
+    },[fetchData, contacts])
     
     useEffect(() => {
         if (lastMessage.current) {
@@ -50,7 +39,7 @@ const ChatLayout = () => {
     useEffect(() => {
         if (socket) {
           socket.on("typing", (currentUser) => {
-            if (currentUser === messageReciever?.uid) {
+            if (currentUser === contacts?.uid) {
                 setTypingUser(currentUser);
               }
           });
@@ -68,20 +57,36 @@ const ChatLayout = () => {
             socket.off("stopTyping");
           }
         };
-    }, [socket, typingUser, messageReciever]);
+    }, [socket, typingUser, contacts]);
+
+    // Handlers
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try 
+        {
+            await sendMessage(message, contacts.uid)
+            await fetchData()
+            setMessage('')
+        } 
+        catch (error) 
+        {
+            alert("Error", error);
+            
+        }
+    }
 
     const handleTyping = () => {
-    if (!isTyping) {
-        setIsTyping(true);
-        socket.emit("typing", { senderId: currentUser.uid, receiverId: messageReciever?.uid });
-    }
-    // Clear typing after a delay (e.g., 2 seconds) after the last keystroke
-    const timeoutId = setTimeout(() => {
-        setIsTyping(false);
-        socket.emit("stopTyping", { senderId: currentUser.uid, receiverId: messageReciever?.uid });
-    }, 5000);
+        if (!isTyping) {
+            setIsTyping(true);
+            socket.emit("typing", { senderId: currentUser.uid, receiverId: contacts?.uid });
+        }
+        // Clear typing after a delay (e.g., 2 seconds) after the last keystroke
+        const timeoutId = setTimeout(() => {
+            setIsTyping(false);
+            socket.emit("stopTyping", { senderId: currentUser.uid, receiverId: contacts?.uid });
+        }, 5000);
 
-    return () => clearTimeout(timeoutId);
+        return () => clearTimeout(timeoutId);
     };
     
     const handleChange = (e) => {
@@ -91,37 +96,33 @@ const ChatLayout = () => {
     
     
     return (
-        <div className="col-8 border chat-layout">
-            <div className="chat-header py-2">
-            {
-                messageReciever ? 
-                (<span>To: {messageReciever?.displayName}
-                    <sup><i className="bi bi-circle-fill mx-2" style={isOnline ? {color: 'green'} : {color: 'white'}}></i></sup>
-                </span>)
-                : ''
-            }
-                    <p><i  className="h6 text-center my-2">{typingUser ? `Typing...` : ''}</i></p>
+        <div className="col-8 chat-layout">
+            <div className="chat-header">
+                {
+                    contacts ? 
+                    (<p>{contacts?.displayName}
+                        <sup><i className="bi bi-circle-fill mx-2" style={isOnline ? {color: 'green'} : {display: 'none'}}></i></sup>
+                    </p>)
+                    : ''
+                }
+                <i>{typingUser ? `Typing...` : ''}</i>
             
             </div>
             <ul className="chat-container">
-                {!messageReciever ? <p className="text-center py-3">Select a chat to start messaging </p>:
-                !conversation ? 
-                <p className="text-center">Start chatting</p> 
+                {
+                contacts.length === 0 ? <p className="text-center py-3">Select a chat to start messaging </p>
+                :
+                conversation.length === 0  ? 
+                <p className="start-message">Start a message with Hi! 👋</p> 
                 :
                 conversation?.map((chat, id) => (
-                    <li className={
-                            chat.senderId === currentUser.uid
-                                ? 'right-message'
-                                : 'left-message'
-                        }
+                    <li className={chat.senderId === currentUser.uid? 'right-message': 'left-message' }
                         key={chat._id}
                         ref={id === conversation.length - 1 ? lastMessage : null}
                     >
                         <p className="message">
                             {chat.message}
-                            <span className="message-time">
-                                {new Date(chat.createdAt).toLocaleTimeString()}
-                            </span>
+                            <span className="message-time">{dateParser(chat.createdAt)}</span>
                         </p>
                     </li>
                 ))}
@@ -139,4 +140,4 @@ const ChatLayout = () => {
     )
 }
 
-export default ChatLayout
+export default Chats

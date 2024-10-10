@@ -1,5 +1,5 @@
 const Spinner = ({buttonName}) => (
-    <div>
+    <div className="text-center">
         <button className="btn btn-info btn-block" type="button" disabled>
             <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             {" "}

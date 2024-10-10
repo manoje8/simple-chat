@@ -30,7 +30,7 @@ const Login = () => {
         } 
         catch (error) 
         {
-            console.log("Error", error)
+            alert("Error", error)
         }
         finally
         {
@@ -60,7 +60,7 @@ const Login = () => {
                     loading ? 
                     <Spinner buttonName={"Login..."}/>
                     :
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="submit" className="btn btn-primary">Login</button>
                 }
                 
                 <div className="account-form-btn">

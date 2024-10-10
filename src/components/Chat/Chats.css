@@ -1,0 +1,130 @@
+.chat-layout {
+    position: relative;
+    height: 100vh;
+}
+  
+.chat-header {
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+    z-index: 1;
+    box-shadow: inset 0 -1px 0 0 #e1e1e1;
+    transition: all .3s cubic-bezier(.39, .575, .565, 1);
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    overflow-x: hidden;
+    height: calc(85% - 50px);
+    padding: 10px;
+}
+
+.chat-container::-webkit-scrollbar{
+    width: 4px;
+    height: 5px;
+    border-left: 1px solid #000;
+    scroll-behavior: smooth;
+}
+
+.chat-container::-webkit-scrollbar-thumb{
+    background: #000;
+}
+
+.chat-container .start-message {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul.chat-container {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+li {
+    margin: 0; /* Remove default margin from list items */
+    padding: 0; /* Remove any padding */
+}
+
+p.message {
+    margin: 0; /* Remove any default margin on <p> */
+    padding: 0; /* Remove any padding if needed */
+}
+
+.left-message, .right-message {
+    list-style: none;
+    padding: 6px 11px;
+    margin: 12px;
+    max-width: 350px;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.left-message {
+    background-color: #959595;
+    border-radius: 20px 20px 20px 0px;
+    align-self: flex-start;
+}
+
+
+.right-message {
+    background-color: #357ae1;
+    border-radius: 20px 20px 0px 20px;
+    align-self: flex-end;
+    color: #f6f6f6;
+}
+
+li.left-message, li.right-message {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.left-message > p > span, .right-message > p > span {
+    display: block;
+    font-size: 10px;
+}
+
+.message {
+    font-size: 15px;
+}
+
+.message-time {
+    font-size: 12px;
+}
+
+/* Message container */
+
+.message-container {
+    position: absolute;
+    bottom: 1.5rem;
+    width: 98%;
+}
+
+.message-form {
+    margin: 0 2rem;
+    display: flex;
+    gap: 0.7rem;
+    justify-content: space-between;
+}
+
+.message-input {
+    flex-grow: 1;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 0 20px;
+    background-color: #fff;
+}
+.send-btn {
+    border-radius: 20px;
+}
+
+.send-btn:hover {
+    background-color: black;
+}

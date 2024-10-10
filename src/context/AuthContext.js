@@ -7,9 +7,9 @@ export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({children}) => {
-    const[currentUser, setCurrentUser] = useState()
-    const[ loading, setLoading] = useState(true)
-    const [ messageReciever, setMessageReciever] = useState([])
+    const [currentUser, setCurrentUser] = useState()
+    const [ loading, setLoading] = useState(true)
+    const [ contacts, setContacts ] = useState([])
     const [isDarkTheme, setIsDarkTheme] = useState(false)
 
     const register = (email, password) => {
@@ -41,6 +41,10 @@ const AuthProvider = ({children}) => {
     useEffect(() => {
         return fetchUser();
     },[fetchUser])
+    
+    const contactHandler = (contact) => {
+        setContacts(contact)
+    }
 
     const context = {
         currentUser,
@@ -49,8 +53,8 @@ const AuthProvider = ({children}) => {
         logout,
         resetPassword,
         updateUserProfile,
-        messageReciever,
-        setMessageReciever,
+        contacts,
+        contactHandler,
         isDarkTheme,
         setIsDarkTheme
     }
