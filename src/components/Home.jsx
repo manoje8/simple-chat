@@ -1,24 +1,18 @@
-import ChatLayout from "./UI/ChatLayout"
-import Layout from "./UI/Layout"
-import Navbar from "./UI/Navbar"
-import UserLayout from "./UI/UserLayout"
-import withAuth from "../utils/withAuth";
+import Chats from "./Chat/Chats"
+import Sidebar from "./Chat/Sidebar"
+import withAuth from "../context/withAuth";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
+    const {isDarkTheme} = useAuth()
+    
     return (
-            <Layout>
-                <div style={{height: "100%"}}>
-                    <div>
-                        <Navbar />
-                    </div>
-                    <div className="container">
-                        <div className="row">
-                            <UserLayout />
-                            <ChatLayout />
-                        </div>
-                    </div>
-                </div>                
-            </Layout>
+            <div className={`container-fluid ${isDarkTheme ? 'dark' : 'light'}`}>
+                <div className="row">
+                    <Sidebar />
+                    <Chats />
+                </div>              
+            </div>
     )
 }
 
