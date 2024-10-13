@@ -8,7 +8,6 @@ This project is a simple chat application built using the MERN (MongoDB, Express
 - **Real-time Messaging**: Instant messaging using Socket.io.
 - **Typing Indicators**: See when the other user is typing.
 - **Online Users List**: Display the list of users currently online.
-- **Responsive UI**: Mobile-friendly design with Bootstrap 4.6.
 
 ### Technologies Used
 
@@ -59,6 +58,21 @@ The frontend will be available at `http://localhost:3000`.
 ### User Workflow
 
 - **Sign Up / Log In**: Use Firebase Authentication to register or log in.
-- **Select a User**: Choose from the list of online users to start chatting.
+- **Select a User**: Choose from the list of users to start chatting.
 - **Send Messages**: Send real-time messages and see the responses instantly.
 - **Typing Indicator**: See when the other user is typing.
+
+
+## Changelog
+
+### v0.0.2
+
+- Added main menu for easier navigation.
+- Grouped messages by date using `dateParser`.
+- Introduced a loader for smoother transitions.
+
+### v0.0.1
+
+- Enabled contact search.
+- Added light/dark theme toggle.
+- Implemented `timeParser` for message timestamps.
