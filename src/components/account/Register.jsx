@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import Card from "./Card"
+import Card from "../UI/Card"
 import { useEffect, useState } from "react";
 import Spinner from "../UI/Spinner";
 import auth from "../../config/firebase";
@@ -69,6 +69,7 @@ const Register = () => {
                 <div className="form-group">
                     <input name="name" type="text" className="form-control" placeholder="Name" onChange={handleChange}/>
                 </div>
+                {/* Todo: Unique userID for global search */}
                 <div className="form-group">
                     <input name="username" type="text" className="form-control" placeholder="@username" onChange={handleChange}/>
                 </div>

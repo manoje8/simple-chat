@@ -7,10 +7,10 @@ export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({children}) => {
-    const [currentUser, setCurrentUser] = useState()
-    const [ loading, setLoading] = useState(true)
-    const [ contacts, setContacts ] = useState([])
-    const [isDarkTheme, setIsDarkTheme] = useState(false)
+    const [currentUser, setCurrentUser] = useState();
+    const [ authLoading, setAuthLoading] = useState(true);
+    const [ contacts, setContacts ] = useState([]);
+    const [isDarkTheme, setIsDarkTheme] = useState(false);
 
     const register = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password)
@@ -33,7 +33,7 @@ const AuthProvider = ({children}) => {
     const fetchUser = useCallback(() => {
         const response =  auth.onAuthStateChanged((user) => {
             setCurrentUser(user)
-            setLoading(false)
+            setAuthLoading(false)
         })
         return response
     },[])
@@ -42,6 +42,7 @@ const AuthProvider = ({children}) => {
         return fetchUser();
     },[fetchUser])
     
+    // Handler for set the select user
     const contactHandler = (contact) => {
         setContacts(contact)
     }
@@ -56,10 +57,10 @@ const AuthProvider = ({children}) => {
         contacts,
         contactHandler,
         isDarkTheme,
-        setIsDarkTheme
+        setIsDarkTheme,
     }
 
-    return <AuthContext.Provider value={context}>{!loading && children}</AuthContext.Provider>
+    return <AuthContext.Provider value={context}>{!authLoading && children}</AuthContext.Provider>
 }
 
 export default AuthProvider

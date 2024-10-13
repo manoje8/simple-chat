@@ -21,6 +21,11 @@
     gap: 1.5rem;
     position: relative;
 }
+
+.sidebar.dark {
+    background-color: #272732;
+    color: #f8f8f8;
+}
   
 .contacts-box {
     display: flex;
@@ -30,17 +35,16 @@
 }
   
 .contacts-box:hover {
-    background-color: rgba(146, 146, 146, 0.785);
+    background-color: rgba(191, 191, 191, 0.495);
     border-radius: 5px;
-    transition: 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     cursor: pointer;
 }
 
 .contacts .active {
-    background-color: rgba(146, 146, 146, 0.785);
+    background-color: rgba(180, 179, 179, 0.599);
     border-radius: 5px;
 }
   
 .contacts-box > span {
-    font-size: x-small;
+    font-size: 12px;
 }

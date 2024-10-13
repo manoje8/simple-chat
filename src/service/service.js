@@ -32,7 +32,7 @@ export const sendMessage = async(message, recieverId) => {
     }
 }
 
-export const getMessages = async(id) => {
+export const getMessagesById = async(id) => {
     try 
     {
         const token = await getAccessToken()
@@ -44,6 +44,19 @@ export const getMessages = async(id) => {
                 Authorization: `Bearer ${token}`
             }
         })
+
+        return response.data
+    } 
+    catch (error) 
+    {
+        throw error
+    }
+}
+
+export const deleteMessageById = async(id) => {
+    try 
+    {
+        const response = await axios.delete(`${serverURL}/message/${id}`)
 
         return response.data
     } 

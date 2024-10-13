@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import Card from "./Card"
+import Card from "../UI/Card"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import Spinner from "../UI/Spinner"
