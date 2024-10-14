@@ -172,10 +172,10 @@ const Chats = () => {
 
                                 {currentDate !== previousDate && <p className="date">{currentDate}</p>}
 
-                                <div className={`message-box ${chat.senderId === currentUser.uid ? 'right-message' : 'left-message'}`} ref={id === conversation.length - 1 ? lastMessage : null}>
-                                        <p className="message" onClick={() => handleDelete(chat)}>
-                                            {chat.message}
-                                        </p>
+                                <div className={`message-box ${chat.senderId === currentUser.uid ? 'right-message' : 'left-message'}`} 
+                                    ref={id === conversation.length - 1 ? lastMessage : null}
+                                >
+                                        <p className="message"> {chat.message}</p>
                                         {/* <p className="message">
                                             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iusto veritatis consequatur facere cupiditate reprehenderit quod cum eveniet. Laudantium alias odio, aliquam atque quae ab repellendus autem! Quibusdam neque placeat nobis.
                                         </p> */}
