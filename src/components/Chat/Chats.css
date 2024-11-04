@@ -36,6 +36,7 @@
     overflow-x: hidden;
     height: calc(85% - 50px);
     padding: 10px;
+    position: relative;
 }
 
 .chat-container::-webkit-scrollbar{
@@ -110,6 +111,7 @@ p.message {
     display: flex;
     gap: 5px;
     justify-content: flex-end;
+    align-items: center;
 }
 
 .right-message .message-info {
@@ -164,4 +166,16 @@ p.message {
 .v-divider {
     width: 1px;
     background-color: #ccc;
+}
+
+.double-tick {
+    font-size: 15px;
+}
+
+.double-tick .bi-slash {
+    margin-left: -9px;
+}
+
+.seen {
+    color: #08d453;
 }

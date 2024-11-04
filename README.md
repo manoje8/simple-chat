@@ -1,6 +1,6 @@
 # Simple Chat Application
 
-This project is a simple chat application built using the MERN (MongoDB, Express, React, Node.js) stack and Socket.io for real-time communication. It includes user authentication, real-time messaging, typing indicators, and a list of online users.
+This project is a full-stack chat application built using the MERN (MongoDB, Express, React, Node.js) stack and Socket.io for real-time communication. It includes user authentication, real-time messaging, typing indicators, and a list of online users.
 
 ## Features
 
@@ -26,7 +26,7 @@ This project is a simple chat application built using the MERN (MongoDB, Express
 1. Clone the repository and navigate to the `client` folder:
 
 ```
-git clone https://github.com/manoje8/simple-chat.git	
+git clone https://github.com/manoje8/simple-chat
 cd simple-chat
 ```
 
@@ -54,16 +54,20 @@ npm start
   
 The frontend will be available at `http://localhost:3000`.
 
-
 ### User Workflow
 
 - **Sign Up / Log In**: Use Firebase Authentication to register or log in.
-- **Select a User**: Choose from the list of users to start chatting.
+- **Select a User**: Choose from the list of online users to start chatting.
 - **Send Messages**: Send real-time messages and see the responses instantly.
 - **Typing Indicator**: See when the other user is typing.
-
+- **Online Users List**: Display the list of users currently online.
 
 ## Changelog
+
+### v0.0.3
+
+- Added context menu for message actions.
+- .Added message status
 
 ### v0.0.2
 

@@ -3,6 +3,10 @@ import { deleteMessageById, getMessagesById, sendMessage } from "../../service/s
 import { useAuth } from "../../context/AuthContext"
 import { useSocketContext } from "../../context/SocketContext"
 import { dateParser, timeParser } from "../../utils/dateParser"
+import ContextMenu from "./ContextMenu.jsx"
+import useTyping from "../hooks/useTyping.js"
+import useMessageStatus from "../hooks/useMessageStatus.js"
+import useSeenStatus from "../hooks/useSeenStatus.js"
 import './Chats.css'
 
 
@@ -12,13 +16,19 @@ const Chats = () => {
 
     const [conversation, setConversation] = useState([])
     const [message, setMessage] = useState('')
-
-    const [isTyping, setIsTyping] = useState(false);
-    const [typingUser, setTypingUser] = useState(null);
     const [loading, setLoading] = useState(false)
+    const [showMenu, setShowMenu] = useState(false)
+    const [deleteMessageId, setDeleteMessageId] = useState('')
     const lastMessage = useRef(null)
 
+
     const isOnline = onlineUsers.includes(contacts?.uid)
+
+    // Custom hooks for socket events
+    const { typingUser, handleTyping, handleStopTyping } = useTyping(socket, currentUser, contacts?.uid);
+    useMessageStatus(socket, setConversation);
+    // Todo:
+    // const { markMessagesAsSeen } = useSeenStatus(socket, currentUser, contacts?.uid);
 
     // Fetch Messages by contact user Id
     const fetchData = useCallback(async(id) => {
@@ -52,92 +62,65 @@ const Chats = () => {
         }
     }, [conversation]);
 
-
-    // Display typing message
-    useEffect(() => {
-        if (socket) 
-        {
-
-            socket.on("typing", (currentUser) => {
-                if (currentUser === contacts?.uid) 
-                {
-                    setTypingUser(currentUser);
-                }
-            });
-    
-            socket.on("stopTyping", (currentUser) => {
-                if (typingUser === currentUser) 
-                {
-                    setTypingUser(null);
-                }
-            });
-        }
-    
-        return () => {
-            if (socket)
-            {
-                socket.off("typing");
-                socket.off("stopTyping");
-            }
-        };
-    }, [socket, typingUser, contacts]);
-
+    // useEffect(() => {
+    //     if (contacts?.uid) {
+    //         markMessagesAsSeen();
+    //     }
+    // }, [contacts, markMessagesAsSeen]);
 
     // Handlers
-
-    const handleTyping = () => {
-        if (!isTyping) 
-        {
-            setIsTyping(true);
-            socket.emit("typing", { senderId: currentUser.uid, receiverId: contacts?.uid });
-        }
-        // Clear typing after a delay (e.g., 2 seconds) after the last keystroke
-        const timeoutId = setTimeout(() => {
-            setIsTyping(false);
-            socket.emit("stopTyping", { senderId: currentUser.uid, receiverId: contacts?.uid });
-        }, 5000);
-
-        return () => clearTimeout(timeoutId);
-    };
-    
     const handleChange = (e) => {
         setMessage(e.target.value)
         handleTyping()
+
+        const stopTypingTimeout = setTimeout(() => {
+            handleStopTyping();
+        }, 2000);
+
+        return () => clearTimeout(stopTypingTimeout);
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!message.trim()) return;
         try 
-        {
-            if(!message)
-            {
-                return;
-            }
-            await sendMessage(message, contacts.uid)
+        {   
+            const { message: sentMessage } = await sendMessage({ message, status: "sent" }, contacts.uid);
+            // Emit "messageSent" with message ID and receiver ID
+            socket.emit("messageSent", { messageId: sentMessage._id, receiverId: contacts.uid });
+
             await fetchData(contacts.uid)
             setMessage('')
         } 
         catch (error) 
         {
-            alert("Error", error);
-            
+            alert("Error", error);            
         }
     }
 
-    const handleDelete = async (messageId) => {
-        const response = await deleteMessageById(messageId)
-        console.log(response); // display deleted response
-        
-        fetchData(contacts.uid)
-        
+    const handleDelete = async () => {
+        try 
+        {
+            await deleteMessageById(deleteMessageId)
+            fetchData(contacts.uid)
+            setShowMenu(false)
+        }
+        catch (error) 
+        {
+            alert("Error deleting message:", error);
+        }
     }
 
-    const handleContextMenu = (e) => {
-        e.preventDefault()
-        console.log("menu"); // Todo context menu
+    const toggleMenu  = (messageId) => {
+        setDeleteMessageId(messageId)
+        handleMenu()
+    }
+
+    const handleMenu = async () => {
+        setShowMenu(!showMenu)
     }
     
-    
+
     return (
         <div className="col-8 chat-layout">
             {Array.isArray(contacts) && contacts.length === 0 ? null : (
@@ -162,13 +145,13 @@ const Chats = () => {
                         <p className="sample-message">Start a message with Hi! 👋</p>
                     ) : (
                         conversation?.map((chat, id) => {
-                        // Get the date of the current message
+
                         const currentDate = dateParser(chat.createdAt);
                         // Get the date of the previous message, if it exists
                         const previousDate = id > 0 ? dateParser(conversation[id - 1].createdAt) : null;
 
                         return (
-                            <li key={chat._id} className="chat-box" onContextMenu={handleContextMenu}>
+                            <li key={chat._id} className="chat-box">
 
                                 {currentDate !== previousDate && <p className="date">{currentDate}</p>}
 
@@ -176,16 +159,24 @@ const Chats = () => {
                                     ref={id === conversation.length - 1 ? lastMessage : null}
                                 >
                                         <p className="message"> {chat.message}</p>
-                                        {/* <p className="message">
-                                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iusto veritatis consequatur facere cupiditate reprehenderit quod cum eveniet. Laudantium alias odio, aliquam atque quae ab repellendus autem! Quibusdam neque placeat nobis.
-                                        </p> */}
                                         <div className="message-info">
                                             <p className="timestamp">{timeParser(chat.createdAt)}</p>
-                                            <div>
-                                                <i className="bi bi-check2"></i>
-                                                {/* <i class="bi bi-check2"></i> */}
-                                                <i className="bi bi-info-lg" onClick={() => handleDelete(chat._id)}></i>
-                                            </div>
+                                            {
+                                                chat.senderId === currentUser.uid ? (
+                                                    <div className="double-tick">
+                                                        {chat.status === "sent" && <i className="bi bi-check2"></i>}
+                                                        {chat.status === "delivered" && (
+                                                            <div>
+                                                                <i className="bi bi-check2"></i>
+                                                                <i className="bi bi-slash"></i>
+                                                            </div>
+                                                        )}
+                                                        
+                                                    </div>
+                                                ) 
+                                                : ""
+                                            }
+                                            <i className="bi bi-info-lg" onClick={() => toggleMenu(chat._id)}></i>
                                         </div>
                                         
                                 </div>
@@ -214,6 +205,12 @@ const Chats = () => {
                     </form>
                 </div>
             }
+
+            <div>
+                {
+                    showMenu ? <ContextMenu showMenu={showMenu} handleMenu={handleMenu} handleDelete={handleDelete}/> : ""
+                }
+            </div>
             
         </div>
 

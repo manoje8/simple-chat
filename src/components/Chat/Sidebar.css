@@ -28,6 +28,7 @@
 }
   
 .contacts-box {
+    position: relative;
     display: flex;
     gap: 1rem;
     padding: 10px;
@@ -47,4 +48,12 @@
   
 .contacts-box > span {
     font-size: 12px;
+}
+
+.badge {
+    border-radius: 25px;
+    background-color: rgb(246, 239, 219);
+    color: #272732;
+    position: absolute;
+    right: 12px;
 }

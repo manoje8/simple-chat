@@ -10,7 +10,7 @@ export const getAccessToken = async() => {
     
 }
 
-export const sendMessage = async(message, recieverId) => {
+export const sendMessage = async(data, recieverId) => {
     try 
     {
         const token = await getAccessToken()        
@@ -18,7 +18,10 @@ export const sendMessage = async(message, recieverId) => {
         const response = await axios({
             method: 'post',
             url: `${serverURL}/message/send/${recieverId}`,
-            data: { message },
+            data: { 
+                message: data.message,
+                status: data.status
+             },
             headers: {
                 Authorization: `Bearer ${token}`
             }
