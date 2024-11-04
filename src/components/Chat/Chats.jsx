@@ -27,8 +27,7 @@ const Chats = () => {
     // Custom hooks for socket events
     const { typingUser, handleTyping, handleStopTyping } = useTyping(socket, currentUser, contacts?.uid);
     useMessageStatus(socket, setConversation);
-    // Todo:
-    // const { markMessagesAsSeen } = useSeenStatus(socket, currentUser, contacts?.uid);
+    const { markMessagesAsSeen } = useSeenStatus(socket, currentUser, contacts?.uid);
 
     // Fetch Messages by contact user Id
     const fetchData = useCallback(async(id) => {
@@ -62,11 +61,11 @@ const Chats = () => {
         }
     }, [conversation]);
 
-    // useEffect(() => {
-    //     if (contacts?.uid) {
-    //         markMessagesAsSeen();
-    //     }
-    // }, [contacts, markMessagesAsSeen]);
+    useEffect(() => {
+        if (contacts?.uid) {
+            markMessagesAsSeen();
+        }
+    }, [contacts, markMessagesAsSeen]);
 
     // Handlers
     const handleChange = (e) => {
@@ -169,6 +168,12 @@ const Chats = () => {
                                                             <div>
                                                                 <i className="bi bi-check2"></i>
                                                                 <i className="bi bi-slash"></i>
+                                                            </div>
+                                                        )}
+                                                        {chat.status === "seen" && (
+                                                            <div>
+                                                                <i className="bi bi-check2 seen"></i>
+                                                                <i className="bi bi-slash seen"></i>
                                                             </div>
                                                         )}
                                                         
