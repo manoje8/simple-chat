@@ -1,0 +1,36 @@
+.context-menu {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.context-menu ul {
+    padding: 5px;
+    margin: 0;
+    list-style: none;
+    background-color: rgba(106, 106, 106, 0.733);
+}
+
+.context-menu-list {
+    display: flex;
+    gap: 1rem;
+    width: 150px;
+    padding: 4px 10px;
+}
+
+.context-menu-list:hover {
+    background-color: rgb(114, 114, 114);
+    border-radius: 3px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+}
