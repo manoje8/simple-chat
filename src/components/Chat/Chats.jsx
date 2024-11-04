@@ -53,6 +53,29 @@ const Chats = () => {
         fetchData(contacts.uid)
     },[fetchData, contacts])
     
+    // Real-time updates for message sending and deletion
+    useEffect(() => {
+
+        if (!socket) return;
+
+        // Listen for incoming new messages
+        socket.on("newMessage", (newMessage) => {
+            if (newMessage.senderId === contacts.uid || newMessage.receiverId === contacts.uid) {
+                setConversation((prevMessages) => [...prevMessages, newMessage]);
+            }
+        });
+
+        // Listen for message deletion
+        socket.on("messageDeleted", ({ messageId }) => {
+            setConversation((prevMessages) => prevMessages.filter((msg) => msg._id !== messageId));
+        });
+
+        // Clean up listeners on unmount
+        return () => {
+            socket.off("newMessage");
+            socket.off("messageDeleted");
+        };
+    }, [socket, contacts.uid]);
     
     // Scroll to the last message
     useEffect(() => {
@@ -87,8 +110,6 @@ const Chats = () => {
             const { message: sentMessage } = await sendMessage({ message, status: "sent" }, contacts.uid);
             // Emit "messageSent" with message ID and receiver ID
             socket.emit("messageSent", { messageId: sentMessage._id, receiverId: contacts.uid });
-
-            await fetchData(contacts.uid)
             setMessage('')
         } 
         catch (error) 
@@ -101,7 +122,8 @@ const Chats = () => {
         try 
         {
             await deleteMessageById(deleteMessageId)
-            fetchData(contacts.uid)
+            // Emit "messageDeleted" event with message ID
+            socket.emit("messageDeleted", { messageId: deleteMessageId });
             setShowMenu(false)
         }
         catch (error) 
