@@ -27,11 +27,11 @@ const ContextMenu = ({showMenu, handleMenu, handleDelete}) => {
         <div className={showMenu ? "context-menu" : 'hidden'}>
             <ul ref={menuRef}>
                 <li className="context-menu-list" onClick={handleDelete}>
-                    <i class="bi bi-trash-fill"></i>
+                    <i className="bi bi-trash-fill"></i>
                     <span>Delete</span>
                 </li>
                 <li className="context-menu-list">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i className="bi bi-info-circle-fill"></i>
                     <span>Info</span>
                 </li>
             </ul>

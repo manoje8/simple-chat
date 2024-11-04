@@ -88,7 +88,7 @@ const Sidebar = () => {
                                 <h4 className="card-title"><b>{user.displayName}</b></h4>
                                 <p className="card-subtitle">Last message</p>
                             </span>
-                            <span className="badge">14</span>
+                            {/* <span className="badge">14</span> Todo: Message notification */}
                         </div>
                     ))
                 }
